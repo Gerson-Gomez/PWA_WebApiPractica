@@ -24,7 +24,9 @@ namespace WebApiPractica.Controllers
         [Route("GetAll")]
         public IActionResult Get()
         {//t_equipos =  tabla
-            List<equipos>mi_lista = (from e in _equiposContexto.t_equipos select e).ToList();
+            List<equipos>mi_lista = (from e in _equiposContexto.t_equipos
+                                     where e.estado =="A"
+                                     select e).ToList();
 
             if (mi_lista.Count == 0 ){
                 return NotFound();
@@ -44,7 +46,7 @@ namespace WebApiPractica.Controllers
             //hay 2 tipos de parametros 1. URL 2.Routing? 
 
             equipos? varEquipos = (from e in _equiposContexto.t_equipos
-                           where e.id_equipos == id 
+                           where e.id_equipos == id && e.estado =="A"
                            select e).FirstOrDefault();
 
             if(varEquipos == null) {
@@ -64,8 +66,9 @@ namespace WebApiPractica.Controllers
         [Route("find")]
         public IActionResult burcar(string filtro) {
             List<equipos>equipos_lista = (from e in _equiposContexto.t_equipos
-                    where e.nombre.Contains(filtro)
-                    || e.descripcion.Contains(filtro)
+                    where (e.nombre.Contains(filtro)
+                    || e.descripcion.Contains(filtro))
+                    && e.estado == "A"
                     select e).ToList();
 
             //mas rapido y mejor para no evaluar todos los registros
